@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input Keuangan Harian</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f4f6fb;
+        padding: 16px;
+      }
+
+      .card {
+        width: min(520px, 100%);
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      h1 {
+        margin: 0 0 16px;
+        font-size: 1.4rem;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #d2d8e4;
+        font-size: 1rem;
+      }
+
+      button {
+        cursor: pointer;
+        border: 0;
+        background: #2d6cdf;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      button:hover {
+        background: #205ac0;
+      }
+
+      .hint {
+        margin-top: 12px;
+        font-size: 0.9rem;
+        color: #536079;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Form Input Data Keuangan</h1>
+      <form id="formData" onsubmit="simpan(event)">
+        <input type="text" id="tanggal" placeholder="Tanggal" required />
+
+        <input type="text" id="deskripsi" placeholder="Deskripsi" required />
+
+        <select id="kategori" required>
+          <option>Saldo Awal Cash</option>
+          <option>Saldo Awal Cashless</option>
+          <option>Cash</option>
+          <option>Cashless</option>
+          <option>Pemasukan Lain</option>
+          <option>Kitchen Cash</option>
+          <option>Kitchen Cashless</option>
+          <option>Bar Cash</option>
+          <option>Bar Cashless</option>
+          <option>Gaji Karyawan</option>
+          <option>Pengeluaran Lain</option>
+        </select>
+
+        <input
+          type="number"
+          id="masuk"
+          inputmode="numeric"
+          placeholder="Nominal Masuk"
+          min="0"
+        />
+
+        <input
+          type="number"
+          id="keluar"
+          inputmode="numeric"
+          placeholder="Nominal Keluar"
+          min="0"
+        />
+
+        <button type="submit">SIMPAN DATA</button>
+      </form>
+
+      <p class="hint">
+        Tombol simpan saat ini masih dummy. Nanti tinggal kita sambungkan ke Google
+        Apps Script.
+      </p>
+    </main>
+
+    <script>
+      function simpan(event) {
+        event.preventDefault();
+
+        const data = {
+          tanggal: document.getElementById("tanggal").value.trim(),
+          deskripsi: document.getElementById("deskripsi").value.trim(),
+          kategori: document.getElementById("kategori").value,
+          masuk: Number(document.getElementById("masuk").value || 0),
+          keluar: Number(document.getElementById("keluar").value || 0),
+        };
+
+        console.log("Data siap dikirim ke Apps Script:", data);
+        alert("Data tercatat di form (dummy). Selanjutnya kita sambungkan ke Google Sheet.");
+      }
+    </script>
+  </body>
+</html>

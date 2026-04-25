@@ -65,6 +65,28 @@
         font-size: 0.9rem;
         color: #536079;
       }
+
+      .status {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 0.92rem;
+        display: none;
+      }
+
+      .status.success {
+        display: block;
+        background: #e9f8ee;
+        color: #1d6f3b;
+        border: 1px solid #b7e4c8;
+      }
+
+      .status.error {
+        display: block;
+        background: #ffecec;
+        color: #9f2222;
+        border: 1px solid #f4b6b6;
+      }
     </style>
   </head>
   <body>
@@ -109,14 +131,27 @@
       </form>
 
       <p class="hint">
-        Tombol simpan saat ini masih dummy. Nanti tinggal kita sambungkan ke Google
-        Apps Script.
+        Form ini sudah terhubung ke Google Apps Script Web App.
       </p>
+      <div id="status" class="status" aria-live="polite"></div>
     </main>
 
     <script>
-      function simpan(event) {
+      const APPS_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwP3LMFWFWzUnKSo4-NxdyoDGyxbIqkqAk1CdXKPAIPPoLhML_7Z0Wr0oNYYdXeLko6/exec";
+
+      function showStatus(type, text) {
+        const statusEl = document.getElementById("status");
+        statusEl.className = `status ${type}`;
+        statusEl.textContent = text;
+      }
+
+      async function simpan(event) {
         event.preventDefault();
+
+        const submitButton = event.target.querySelector("button[type='submit']");
+        submitButton.disabled = true;
+        submitButton.textContent = "Menyimpan...";
 
         const data = {
           tanggal: document.getElementById("tanggal").value.trim(),
@@ -126,8 +161,29 @@
           keluar: Number(document.getElementById("keluar").value || 0),
         };
 
-        console.log("Data siap dikirim ke Apps Script:", data);
-        alert("Data tercatat di form (dummy). Selanjutnya kita sambungkan ke Google Sheet.");
+        try {
+          const response = await fetch(APPS_SCRIPT_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok || !result.ok) {
+            throw new Error(result.message || "Gagal menyimpan data.");
+          }
+
+          showStatus("success", result.message || "Data berhasil disimpan.");
+          document.getElementById("formData").reset();
+        } catch (error) {
+          showStatus("error", `Gagal: ${error.message}`);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "SIMPAN DATA";
+        }
       }
     </script>
   </body>
